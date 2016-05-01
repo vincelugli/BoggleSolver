@@ -11,11 +11,13 @@
 
 class WordNode;
 
-class DictionaryParser
+class Dictionary
 {
 public:
-    DictionaryParser();
-    ~DictinoaryParser();
+    Dictionary();
+    ~Dictionary() = default;
+    
+    bool isWord(const char* word);
     
 private:
     std::unordered_map<char, WordNode*>    mDictionary;

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		87BACA6D1CD6407F00FC32C0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 87BACA6C1CD6407F00FC32C0 /* main.cpp */; };
 		87BACA771CD645B600FC32C0 /* WordNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 87BACA751CD645B600FC32C0 /* WordNode.cpp */; };
+		87BACA7A1CD698B200FC32C0 /* Dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 87BACA781CD698B200FC32C0 /* Dictionary.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,9 +27,10 @@
 /* Begin PBXFileReference section */
 		87BACA691CD6407F00FC32C0 /* BoggleSolver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BoggleSolver; sourceTree = BUILT_PRODUCTS_DIR; };
 		87BACA6C1CD6407F00FC32C0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		87BACA731CD6431E00FC32C0 /* DictionaryParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DictionaryParser.h; sourceTree = "<group>"; };
+		87BACA731CD6431E00FC32C0 /* Dictionary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dictionary.h; sourceTree = "<group>"; };
 		87BACA741CD643F500FC32C0 /* WordNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 2; path = WordNode.h; sourceTree = "<group>"; };
 		87BACA751CD645B600FC32C0 /* WordNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WordNode.cpp; sourceTree = "<group>"; };
+		87BACA781CD698B200FC32C0 /* Dictionary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Dictionary.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,9 +64,10 @@
 			isa = PBXGroup;
 			children = (
 				87BACA6C1CD6407F00FC32C0 /* main.cpp */,
-				87BACA731CD6431E00FC32C0 /* DictionaryParser.h */,
+				87BACA731CD6431E00FC32C0 /* Dictionary.h */,
 				87BACA741CD643F500FC32C0 /* WordNode.h */,
 				87BACA751CD645B600FC32C0 /* WordNode.cpp */,
+				87BACA781CD698B200FC32C0 /* Dictionary.cpp */,
 			);
 			path = BoggleSolver;
 			sourceTree = "<group>";
@@ -127,6 +130,7 @@
 			files = (
 				87BACA6D1CD6407F00FC32C0 /* main.cpp in Sources */,
 				87BACA771CD645B600FC32C0 /* WordNode.cpp in Sources */,
+				87BACA7A1CD698B200FC32C0 /* Dictionary.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

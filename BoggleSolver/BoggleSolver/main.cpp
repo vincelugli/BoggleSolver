@@ -10,13 +10,12 @@
 #include <string>
 
 #include "WordNode.h"
+#include "Dictionary.h"
 
 int main(int argc, const char * argv[]) {
-    WordNode testing("ardvark");
-    testing.addNewWord("ad");
+    Dictionary dict;
     
-    bool isWord = testing.isWord("ad");
-    isWord = testing.isWord("ard5vark");
+    bool test = dict.isWord("aardvark");
     
     return 0;
 }
