@@ -9,13 +9,12 @@
 #include <iostream>
 #include <string>
 
-#include "WordNode.h"
 #include "Dictionary.h"
 
 int main(int argc, const char * argv[]) {
     Dictionary dict;
     
-    bool test = dict.isWord("aardvark");
+    bool test = dict.isWord("");
     
     return 0;
 }

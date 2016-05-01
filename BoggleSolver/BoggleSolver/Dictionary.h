@@ -9,16 +9,20 @@
 
 #include <unordered_map>
 
-class WordNode;
-
 class Dictionary
 {
 public:
     Dictionary();
-    ~Dictionary() = default;
+    Dictionary(const char* word);
+    Dictionary(bool isWord);
+    ~Dictionary();
     
+    void addNewWord(const char* word);
     bool isWord(const char* word);
     
 private:
-    std::unordered_map<char, WordNode*>    mDictionary;
+    void addLetterToMap(const char* word);
+    
+    std::unordered_map<char, Dictionary*>   mDictionary;
+    bool                                    mIsWord = false;
 };
