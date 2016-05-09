@@ -1,0 +1,7 @@
+﻿  main.cpp
+  Dictionary.cpp
+  Board.cpp
+d:\git\bogglesolver\bogglesolver\board.cpp(47): warning C4018: '<' : signed/unsigned mismatch
+d:\git\bogglesolver\bogglesolver\board.cpp(49): warning C4018: '<' : signed/unsigned mismatch
+  Generating Code...
+  BoggleSolver.vcxproj -> D:\Git\BoggleSolver\BoggleSolver\Debug\BoggleSolver.exe
