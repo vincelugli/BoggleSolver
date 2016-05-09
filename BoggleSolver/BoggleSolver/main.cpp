@@ -6,15 +6,12 @@
 //  Copyright © 2016 Vince Lugli. All rights reserved.
 //
 
-#include <iostream>
-#include <string>
-
-#include "Dictionary.h"
+#include "Board.h"
 
 int main(int argc, const char * argv[]) {
-    Dictionary dict;
+    Board boggleBoard;
     
-    bool test = dict.isWord("");
+    boggleBoard.solve();
     
     return 0;
 }

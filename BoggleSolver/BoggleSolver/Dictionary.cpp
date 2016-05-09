@@ -7,23 +7,26 @@
 //
 
 #include "Dictionary.h"
-#include "Dictionary.h"
 
 #include <fstream>
 #include <string>
 
-#include <iostream>
-
 Dictionary::Dictionary()
 {
-    std::ifstream filebuffer("/Users/vlugli/Git/BoggleSolver/BoggleSolver/BoggleSolver/english-words.20", std::ifstream::in);
+    // /Users/vlugli/Git/BoggleSolver/BoggleSolver/BoggleSolver/BoggleSolver
+    std::ifstream filebuffer("/Users/vlugli/Git/BoggleSolver/BoggleSolver/BoggleSolver/BoggleSolver/english-words.20", std::ifstream::in);
     
     for (std::string word; std::getline(filebuffer, word); )
     {
+        // Early our for words with '
+        if (word.find('\'') != std::string::npos)
+        {
+            continue;
+        }
+        
         // Remove end of line character (\r)
         word.erase(word.end() - 1);
         const char* cStrWord = word.c_str();
-        
         
         std::unordered_map<char, Dictionary*>::iterator found = mDictionary.find(*cStrWord);
         if (found == mDictionary.end())
@@ -37,10 +40,6 @@ Dictionary::Dictionary()
         }
     }
 }
-
-#include <iostream>
-
-#include "Dictionary.h"
 
 Dictionary::Dictionary(bool isWord)
 : mIsWord(isWord)
@@ -84,12 +83,24 @@ void Dictionary::addLetterToMap(const char* word)
     }
 }
 
-bool Dictionary::isWord(const char* word)
+WordResult Dictionary::isWord(const char* word)
 {
-    std::unordered_map<char, Dictionary*>::iterator found = mDictionary.find(*word);
-    if (found == mDictionary.end())
+    if (mDictionary.find(*word) == mDictionary.end())
     {
-        return *word ? false : mIsWord;
+        // If I still have word left, any possible future words with this prefix are impossible. Return EARLY_OUT
+        if (*word)
+        {
+            return EARLY_OUT;
+        }
+        
+        // If finished my word, but don't have any place left to go, I'm a leaf and can early out.
+        if (!mIsWord && mDictionary.empty())
+        {
+            return EARLY_OUT;
+        }
+        
+        // If I finished my word, check if I'm currently a word or not.
+        return mIsWord ? WORD : NO_WORD;
     }
     else
     {

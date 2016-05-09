@@ -9,6 +9,13 @@
 
 #include <unordered_map>
 
+enum WordResult
+{
+    EARLY_OUT,
+    WORD,
+    NO_WORD
+};
+
 class Dictionary
 {
 public:
@@ -18,7 +25,7 @@ public:
     ~Dictionary();
     
     void addNewWord(const char* word);
-    bool isWord(const char* word);
+    WordResult isWord(const char* word);
     
 private:
     void addLetterToMap(const char* word);
