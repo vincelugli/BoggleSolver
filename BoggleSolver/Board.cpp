@@ -16,18 +16,19 @@ Board::Board()
 , mRows(0)
 , mCols(0)
 {
-    mBoggleBoardStream.open("/Users/vlugli/Git/BoggleSolver/BoggleSolver/BoggleSolver/BoggleSolver/boggle-board.csv", std::ifstream::in);
+    mBoggleBoardStream.open("../Random100x100.csv", std::ifstream::in);
     
     for (std::string row; std::getline(mBoggleBoardStream, row); )
     {
         std::istringstream rowStream(row);
         std::vector<char> newRow;
-        mCols = 0;
+        int maxCols = 0;
         for (std::string bogglePiece; std::getline(rowStream, bogglePiece, ','); )
         {
             newRow.push_back(*bogglePiece.c_str());
-            ++mCols;
+            ++maxCols;
         }
+        mCols = maxCols > mCols ? maxCols : mCols;
         mBoggleBoard.push_back(newRow);
         ++mRows;
     }
@@ -44,31 +45,30 @@ Board::~Board()
 
 void Board::solve()
 {
-    for (int row = 0; row < mBoggleBoard.size(); ++row)
+    std::vector<bool> prevLocations(mBoggleBoard.size() * mBoggleBoard[0].size());
+    for (size_t row = 0; row < mBoggleBoard.size(); ++row)
     {
-        for(int col = 0; col < mBoggleBoard[row].size(); ++col)
+        for(size_t col = 0; col < mBoggleBoard[row].size(); ++col)
         {
             std::string str = "";
-            std::set<std::pair<int, int>> prevLocations;
             solve(str, prevLocations, row, col);
         }
     }
 }
 
-void Board::solve(std::string str, std::set<std::pair<int, int> > prevLocations, int row, int col)
+void Board::solve(std::string str, std::vector<bool>& prevLocations, int row, int col)
 {
     // Early out if current location has been viewed. May want to move this to before function call.
-    std::pair<int, int> newPair = std::make_pair(row, col);
-    if (prevLocations.find(newPair) != prevLocations.end())
+    if (prevLocations[row*col])
     {
         return;
     }
     
     str += mBoggleBoard[row][col];
     const char* potentialWord = str.c_str();
-    prevLocations.emplace(newPair);
+    prevLocations[row*col] = true;
     
-    if (prevLocations.size() >= 3)
+    if (str.size() >= 3)
     {
         WordResult findResult = mDict->isWord(potentialWord);
         if (findResult == WORD)
@@ -76,7 +76,6 @@ void Board::solve(std::string str, std::set<std::pair<int, int> > prevLocations,
             if (mFoundWords.find(str) == mFoundWords.end())
             {
                 mFoundWords.insert(str);
-                std::cout << str << std::endl;
             }
         }
         else if (findResult == EARLY_OUT)
@@ -127,7 +126,7 @@ void Board::solve(std::string str, std::set<std::pair<int, int> > prevLocations,
     }
     
     // Finished looking through this point. Remove pair.
-    prevLocations.erase(prevLocations.find(newPair));
+    prevLocations[row * col] = false;
     str.erase(str.end());
 }
 

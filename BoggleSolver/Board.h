@@ -24,7 +24,9 @@ public:
     ~Board();
     
     void solve();
-    void solve(std::string str, std::set<std::pair<int, int>> prevLocations, int row, int col);
+    void solve(std::string str, std::vector<bool>& prevLocations, int row, int col);
+
+    size_t GetFoundWordsSize() const { return mFoundWords.size(); }
     
 private:
     std::set<std::string> mFoundWords;

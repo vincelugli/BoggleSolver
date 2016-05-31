@@ -9,4 +9,10 @@
     <ClInclude Include="..\Board.h" />
     <ClInclude Include="..\Dictionary.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\boggle_board.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\words.txt" />
+  </ItemGroup>
 </Project>

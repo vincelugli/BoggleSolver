@@ -29,7 +29,9 @@ public:
     
 private:
     void addLetterToMap(const char* word);
-    
-    std::unordered_map<char, Dictionary*>   mDictionary;
-    bool                                    mIsWord = false;
+    Dictionary*& GetChild(char c);
+
+    int           mDictionarySize = 0;
+    Dictionary*   mDictionary[26] = {};
+    bool          mIsWord = false;
 };

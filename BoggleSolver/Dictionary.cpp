@@ -13,30 +13,34 @@
 
 Dictionary::Dictionary()
 {
-    // /Users/vlugli/Git/BoggleSolver/BoggleSolver/BoggleSolver/BoggleSolver
-    std::ifstream filebuffer("/Users/vlugli/Git/BoggleSolver/BoggleSolver/BoggleSolver/BoggleSolver/english-words.20", std::ifstream::in);
+    std::ifstream filebuffer("../words.txt", std::ifstream::in);
     
     for (std::string word; std::getline(filebuffer, word); )
     {
-        // Early our for words with '
-        if (word.find('\'') != std::string::npos)
+        bool valid = true;
+        for (char c : word)
+        {
+            if (c < 'a' || c > 'z')
+            {
+                valid = false;
+                break;
+            }
+        }
+        if (!valid || word[0] == '\0')
         {
             continue;
         }
         
-        // Remove end of line character (\r)
-        word.erase(word.end() - 1);
         const char* cStrWord = word.c_str();
         
-        std::unordered_map<char, Dictionary*>::iterator found = mDictionary.find(*cStrWord);
-        if (found == mDictionary.end())
+        if (!GetChild(cStrWord[0]))
         {
             // New letter
-            mDictionary.emplace(cStrWord[0], new Dictionary(cStrWord + 1));
+            GetChild(cStrWord[0]) = new Dictionary(cStrWord + 1);
         }
         else
         {
-            mDictionary[*cStrWord]->addNewWord(cStrWord + 1);
+            GetChild(cStrWord[0])->addNewWord(cStrWord + 1);
         }
     }
 }
@@ -52,18 +56,32 @@ Dictionary::Dictionary(const char* word)
 
 Dictionary::~Dictionary()
 {
-    // Clean up all Dictionarys we created.
-    for(auto const& nextLetter : mDictionary) {
-        delete nextLetter.second;
+    // Clean up all Dictionaries we created.
+    //for(auto const& nextLetter : mDictionary) {
+    //    delete nextLetter;
+    //}
+}
+
+Dictionary*& Dictionary::GetChild(char c)
+{
+    if (c < 'a' || c > 'z')
+    {
+        static int vince = 0;
+        ++vince;
     }
+    return mDictionary[c - 97];
 }
 
 void Dictionary::addNewWord(const char *word)
 {
-    if (mDictionary.count(word[0]))
+    if (word[0] == '\0')
+    {
+        return;
+    }
+    if (GetChild(word[0]))
     {
         // Letter already exists, pass onto existing Dictionary
-        mDictionary[word[0]]->addNewWord(&word[1]);
+       GetChild(word[0])->addNewWord(&word[1]);
     }
     else
     {
@@ -75,17 +93,23 @@ void Dictionary::addLetterToMap(const char* word)
 {
     if (word[1])
     {
-        mDictionary.emplace(word[0], new Dictionary(word + 1));
+        GetChild(word[0]) = new Dictionary(word + 1);
+        ++mDictionarySize;
     }
     else
     {
-        mDictionary.emplace(word[0], new Dictionary(true));
+        GetChild(word[0]) = new Dictionary(true);
+        ++mDictionarySize;
     }
 }
 
 WordResult Dictionary::isWord(const char* word)
 {
-    if (mDictionary.find(*word) == mDictionary.end())
+    if (word[0] == '\0')
+    {
+        return mIsWord ? WORD : NO_WORD;
+    }
+    if (!GetChild(word[0]))
     {
         // If I still have word left, any possible future words with this prefix are impossible. Return EARLY_OUT
         if (*word)
@@ -94,7 +118,7 @@ WordResult Dictionary::isWord(const char* word)
         }
         
         // If finished my word, but don't have any place left to go, I'm a leaf and can early out.
-        if (!mIsWord && mDictionary.empty())
+        if (!mIsWord && mDictionarySize == 0)
         {
             return EARLY_OUT;
         }
@@ -104,6 +128,6 @@ WordResult Dictionary::isWord(const char* word)
     }
     else
     {
-        return mDictionary.at(*word)->isWord(word + 1);
+        return GetChild(word[0])->isWord(word + 1);
     }
 }
