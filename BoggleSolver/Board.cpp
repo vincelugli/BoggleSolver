@@ -16,7 +16,7 @@ Board::Board()
 , mRows(0)
 , mCols(0)
 {
-    mBoggleBoardStream.open("../Random100x100.csv", std::ifstream::in);
+    mBoggleBoardStream.open("../Random2000x2000.csv", std::ifstream::in);
     
     for (std::string row; std::getline(mBoggleBoardStream, row); )
     {
@@ -59,7 +59,11 @@ void Board::solve()
 void Board::solve(std::string str, std::vector<bool>& prevLocations, int row, int col)
 {
     // Early out if current location has been viewed. May want to move this to before function call.
-    if (row >= mRows || col >= mCols || prevLocations[mCols*row + col])
+    if (row >= mRows || 
+        col >= mCols || 
+        col < 0 || 
+        row < 0 || 
+        prevLocations[mCols*row + col])
     {
         return;
     }
@@ -73,10 +77,7 @@ void Board::solve(std::string str, std::vector<bool>& prevLocations, int row, in
         WordResult findResult = mDict->isWord(potentialWord);
         if (findResult == WORD)
         {
-            if (mFoundWords.find(str) == mFoundWords.end())
-            {
-                mFoundWords.insert(str);
-            }
+            mFoundWords.insert(str);
         }
         else if (findResult == EARLY_OUT)
         {
@@ -86,48 +87,16 @@ void Board::solve(std::string str, std::vector<bool>& prevLocations, int row, in
         }
     }
     
-    if (col != mCols)
-    {
-        solve(str, prevLocations, row, col+1);
-        
-        if (row != mRows)
-        {
-            solve(str, prevLocations, row+1, col+1);
-        }
-        if (row != 0)
-        {
-            solve(str, prevLocations, row-1, col+1);
-        }
-    }
+    solve(str, prevLocations, row, col + 1);
+    solve(str, prevLocations, row, col - 1);
+    solve(str, prevLocations, row + 1, col);
+    solve(str, prevLocations, row + 1, col + 1);
+    solve(str, prevLocations, row + 1, col - 1);
+    solve(str, prevLocations, row - 1, col);
+    solve(str, prevLocations, row - 1, col + 1);
+    solve(str, prevLocations, row - 1, col - 1);
     
-    if (row != mRows)
-    {
-        solve(str, prevLocations, row+1, col);
-        
-        if (col != 0)
-        {
-            solve(str, prevLocations, row+1, col-1);
-        }
-    }
-    
-    
-    if (col != 0)
-    {
-        solve(str, prevLocations, row, col-1);
-        
-        if (row != 0)
-        {
-            solve(str, prevLocations, row-1, col-1);
-        }
-    }
-    
-    if (row != 0)
-    {
-        solve(str, prevLocations, row-1, col);
-    }
-    
-    // Finished looking through this point. Remove pair.
+    // Finished looking through this point.
     prevLocations[mCols*row + col] = false;
-    //str.erase(str.end());
 }
 

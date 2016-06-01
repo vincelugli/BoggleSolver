@@ -107,7 +107,15 @@ WordResult Dictionary::isWord(const char* word)
 {
     if (word[0] == '\0')
     {
-        return mIsWord ? WORD : NO_WORD;
+        if (mIsWord)
+        {
+            mIsWord = false;
+            return WORD;
+        }
+        else
+        {
+            return NO_WORD;
+        }
     }
     if (!GetChild(word[0]))
     {
@@ -117,14 +125,22 @@ WordResult Dictionary::isWord(const char* word)
             return EARLY_OUT;
         }
         
-        // If finished my word, but don't have any place left to go, I'm a leaf and can early out.
+        // If I haven't finished my word, but don't have any place left to go, I'm a leaf and can early out.
         if (!mIsWord && mDictionarySize == 0)
         {
             return EARLY_OUT;
         }
         
         // If I finished my word, check if I'm currently a word or not.
-        return mIsWord ? WORD : NO_WORD;
+        if (mIsWord)
+        {
+            mIsWord = false;
+            return WORD;
+        }
+        else
+        {
+            return NO_WORD;
+        }
     }
     else
     {
