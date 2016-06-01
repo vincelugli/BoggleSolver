@@ -1,7 +1,5 @@
-﻿  main.cpp
-  Dictionary.cpp
-  Board.cpp
-d:\git\bogglesolver\bogglesolver\board.cpp(47): warning C4018: '<' : signed/unsigned mismatch
-d:\git\bogglesolver\bogglesolver\board.cpp(49): warning C4018: '<' : signed/unsigned mismatch
-  Generating Code...
+﻿  Board.cpp
+d:\git\bogglesolver\bogglesolver\dictionary.h(35): warning C4351: new behavior: elements of array 'Dictionary::mDictionary' will be default initialized
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/PROFILE' specification
+Board.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
   BoggleSolver.vcxproj -> D:\Git\BoggleSolver\BoggleSolver\Debug\BoggleSolver.exe

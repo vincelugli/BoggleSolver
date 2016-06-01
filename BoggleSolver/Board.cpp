@@ -33,8 +33,8 @@ Board::Board()
         ++mRows;
     }
     
-    --mCols;
-    --mRows;
+//     --mCols;
+//     --mRows;
     mBoggleBoardStream.close();
 }
 
@@ -59,14 +59,14 @@ void Board::solve()
 void Board::solve(std::string str, std::vector<bool>& prevLocations, int row, int col)
 {
     // Early out if current location has been viewed. May want to move this to before function call.
-    if (prevLocations[row*col])
+    if (row >= mRows || col >= mCols || prevLocations[mCols*row + col])
     {
         return;
     }
     
     str += mBoggleBoard[row][col];
     const char* potentialWord = str.c_str();
-    prevLocations[row*col] = true;
+    prevLocations[mCols*row + col] = true;
     
     if (str.size() >= 3)
     {
@@ -81,6 +81,7 @@ void Board::solve(std::string str, std::vector<bool>& prevLocations, int row, in
         else if (findResult == EARLY_OUT)
         {
             // Early out since we hit a leaf node. No possible words past this point.
+            prevLocations[mCols*row + col] = false;
             return;
         }
     }
@@ -126,7 +127,7 @@ void Board::solve(std::string str, std::vector<bool>& prevLocations, int row, in
     }
     
     // Finished looking through this point. Remove pair.
-    prevLocations[row * col] = false;
-    str.erase(str.end());
+    prevLocations[mCols*row + col] = false;
+    //str.erase(str.end());
 }
 
