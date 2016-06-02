@@ -20,7 +20,7 @@ class Dictionary;
 class Board
 {
 public:
-    Board();
+    Board(Dictionary& dict);
     ~Board();
     
     void solve();
@@ -29,10 +29,9 @@ public:
     size_t GetFoundWordsSize() const { return mFoundWords.size(); }
     
 private:
-    std::set<std::string> mFoundWords;
-    Dictionary* mDict;
-    std::ifstream mBoggleBoardStream;
-    std::vector<std::vector<char>> mBoggleBoard;
+    std::vector<std::string> mFoundWords;
+    Dictionary& mDict;
+    std::vector<char> mBoggleBoard;
     int mRows;
     int mCols;
 };

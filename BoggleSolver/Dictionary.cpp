@@ -14,33 +14,39 @@
 Dictionary::Dictionary()
 {
     std::ifstream filebuffer("../words.txt", std::ifstream::in);
-    
-    for (std::string word; std::getline(filebuffer, word); )
+    filebuffer.seekg(0, filebuffer.end);
+    int length = filebuffer.tellg();
+    filebuffer.seekg(0, filebuffer.beg);
+
+    std::vector<char> buffer;
+    buffer.resize(length + 1);
+    filebuffer.read(buffer.data(), length);
+    buffer[length] = '\0';
+
+    int start = 0;
+    int end = 0;
+
+    for (int i = 0; i < length; ++i)
     {
-        bool valid = true;
-        for (char c : word)
+        start = i;
+        while (i < length && (buffer[i] != '\n' && buffer[i] != '\r'))
         {
-            if (c < 'a' || c > 'z')
-            {
-                valid = false;
-                break;
-            }
+            ++i;
         }
-        if (!valid || word[0] == '\0')
+        end = i;
+        if (start == end)
         {
             continue;
         }
-        
-        const char* cStrWord = word.c_str();
-        
-        if (!GetChild(cStrWord[0]))
+
+        if (!GetChild(buffer[start]))
         {
-            // New letter
-            GetChild(cStrWord[0]) = new Dictionary(cStrWord + 1);
+            // New Letter
+            GetChild(buffer[start]) = new Dictionary(start + 1, end, buffer);
         }
         else
         {
-            GetChild(cStrWord[0])->addNewWord(cStrWord + 1);
+            GetChild(buffer[start])->addNewWord(start + 1, end, buffer);
         }
     }
 }
@@ -54,27 +60,71 @@ Dictionary::Dictionary(const char* word)
     addLetterToMap(word);
 }
 
+Dictionary::Dictionary(int start, int end, const std::vector<char>& buffer)
+{
+    Dictionary* curr = this;
+    Dictionary* next;
+    while (start + 1 < end)
+    {
+        next = new Dictionary(false);
+        curr->GetChild(buffer[start]) = next;
+        curr = next;
+        ++start;
+    }
+    curr->GetChild(buffer[start]) = new Dictionary(true);
+}
+
 Dictionary::~Dictionary()
 {
-    // Clean up all Dictionaries we created.
-    //for(auto const& nextLetter : mDictionary) {
-    //    delete nextLetter;
-    //}
 }
 
 Dictionary*& Dictionary::GetChild(char c)
 {
-    if (c < 'a' || c > 'z')
-    {
-        static int vince = 0;
-        ++vince;
-    }
     return mDictionary[c - 97];
+}
+
+void Dictionary::addNewWord(int start, int end, const std::vector<char>& buffer)
+{
+    Dictionary* curr = this;
+    while (start + 1 < end)
+    {
+        if (!curr->GetChild(buffer[start]))
+        {
+            // New Letter
+            GetChild(buffer[start]) = new Dictionary(start + 1, end, buffer);
+            return;
+        }
+        curr = curr->GetChild(buffer[start]);
+        ++start;
+    }
+
+    if (!curr->GetChild(buffer[start]))
+    {
+        curr->GetChild(buffer[start]) = new Dictionary(true);
+    }
+    else
+    {
+        curr->GetChild(buffer[start])->mIsWord = true;
+    }
+//     if (start + 1 == end)
+//     {
+//         GetChild(buffer[start]) = new Dictionary(true);
+//         return;
+//     }
+//     if (!GetChild(buffer[start]))
+//     {
+//         // New Letter
+//         GetChild(buffer[start]) = new Dictionary(start + 1, end, buffer);
+//     }
+//     else
+//     {
+//         GetChild(buffer[start])->addNewWord(start + 1, end, buffer);
+//     }
 }
 
 void Dictionary::addNewWord(const char *word)
 {
-    if (word[0] == '\0')
+    if (word[0] == '\0' || word[0] == '\n' || word[0] == '\r')
     {
         return;
     }

@@ -22,13 +22,16 @@ public:
     Dictionary();
     Dictionary(const char* word);
     Dictionary(bool isWord);
+    Dictionary(int start, int end, const std::vector<char>& buffer);
     ~Dictionary();
     
     void addNewWord(const char* word);
+    void addNewWord(int start, int end, const std::vector<char>& buffer);
     WordResult isWord(const char* word);
     
 private:
     void addLetterToMap(const char* word);
+    void addLetterToDict(int start, int end, const std::vector<char>& buffer);
     Dictionary*& GetChild(char c);
 
     int           mDictionarySize = 0;

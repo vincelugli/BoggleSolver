@@ -7,15 +7,18 @@
 //
 
 #include "Board.h"
+#include "Dictionary.h"
 
 #include <ctime>
 #include <iostream>
 
 int main(int argc, const char * argv[]) {
-    Board boggleBoard;
-    
     clock_t startTime = clock();
 
+    Dictionary dict;
+
+    Board boggleBoard(dict);
+    
     boggleBoard.solve();
 
     clock_t endTime = clock();

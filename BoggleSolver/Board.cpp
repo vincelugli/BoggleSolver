@@ -11,44 +11,52 @@
 
 #include <iostream>
 
-Board::Board()
-: mDict(new Dictionary())
-, mRows(0)
+Board::Board(Dictionary& dict)
+: mDict(dict)
+, mRows(1) // Start at 1 because we start reading at the first row.
 , mCols(0)
 {
-    mBoggleBoardStream.open("../Random2000x2000.csv", std::ifstream::in);
-    
-    for (std::string row; std::getline(mBoggleBoardStream, row); )
+    mFoundWords.reserve(1024);
+
+    std::ifstream boggleBoardStream("../Random100x100.csv", std::ifstream::in);
+    boggleBoardStream.seekg(0, boggleBoardStream.end);
+    int length = boggleBoardStream.tellg();
+    boggleBoardStream.seekg(0, boggleBoardStream.beg);
+
+    mBoggleBoard.reserve(length);
+
+    std::vector<char> buffer;
+    buffer.resize(length + 1);
+    boggleBoardStream.read(buffer.data(), length);
+    buffer[length] = '\0';
+
+    for (int i = 0; i < length; ++i)
     {
-        std::istringstream rowStream(row);
-        std::vector<char> newRow;
-        int maxCols = 0;
-        for (std::string bogglePiece; std::getline(rowStream, bogglePiece, ','); )
+        char c = buffer[i];
+        if (c >= 'a' && c <= 'z')
         {
-            newRow.push_back(*bogglePiece.c_str());
-            ++maxCols;
+            mBoggleBoard.push_back(c);
         }
-        mCols = maxCols > mCols ? maxCols : mCols;
-        mBoggleBoard.push_back(newRow);
-        ++mRows;
+        else if (c == '\n') 
+        {
+            ++mRows;
+        }
     }
-    
-//     --mCols;
-//     --mRows;
-    mBoggleBoardStream.close();
+
+    mCols = mBoggleBoard.size() / mRows;
+    boggleBoardStream.close();
 }
 
 Board::~Board()
 {
-    delete mDict;
 }
 
 void Board::solve()
 {
-    std::vector<bool> prevLocations(mBoggleBoard.size() * mBoggleBoard[0].size());
-    for (size_t row = 0; row < mBoggleBoard.size(); ++row)
+    std::vector<bool> prevLocations(mBoggleBoard.size());
+    for (size_t row = 0; row < mRows; ++row)
     {
-        for(size_t col = 0; col < mBoggleBoard[row].size(); ++col)
+        for(size_t col = 0; col < mCols; ++col)
         {
             std::string str = "";
             solve(str, prevLocations, row, col);
@@ -68,16 +76,16 @@ void Board::solve(std::string str, std::vector<bool>& prevLocations, int row, in
         return;
     }
     
-    str += mBoggleBoard[row][col];
+    str += mBoggleBoard[mCols*row + col];
     const char* potentialWord = str.c_str();
     prevLocations[mCols*row + col] = true;
     
     if (str.size() >= 3)
     {
-        WordResult findResult = mDict->isWord(potentialWord);
+        WordResult findResult = mDict.isWord(potentialWord);
         if (findResult == WORD)
         {
-            mFoundWords.insert(str);
+            mFoundWords.emplace_back(str);
         }
         else if (findResult == EARLY_OUT)
         {
